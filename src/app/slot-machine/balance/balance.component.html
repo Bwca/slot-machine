@@ -1,1 +1,5 @@
-<p>balance works!</p>
+<p>Total balance: {{balance$ | async}}</p>
+<label>
+    <p>Enter new balance</p>
+    <input type="number" min="1" [formControl]="cashControl" />
+</label>

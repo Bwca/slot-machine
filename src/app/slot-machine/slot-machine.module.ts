@@ -6,10 +6,17 @@ import { SlotMachineCanvasComponent } from './slot-machine-canvas/slot-machine-c
 import { BalanceComponent } from './balance/balance.component';
 import { DebugMenuComponent } from './debug-menu/debug-menu.component';
 import { PayTableComponent } from './pay-table/pay-table.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [SlotMachineComponent, SlotMachineCanvasComponent, BalanceComponent, DebugMenuComponent, PayTableComponent],
-  imports: [CommonModule],
+  declarations: [
+    SlotMachineComponent,
+    SlotMachineCanvasComponent,
+    BalanceComponent,
+    DebugMenuComponent,
+    PayTableComponent
+  ],
+  imports: [CommonModule, ReactiveFormsModule],
   exports: [SlotMachineComponent]
 })
 export class SlotMachineModule {}

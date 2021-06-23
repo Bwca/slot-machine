@@ -1,15 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-slot-machine',
   templateUrl: './slot-machine.component.html',
-  styleUrls: ['./slot-machine.component.scss']
+  styleUrls: ['./slot-machine.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotMachineComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

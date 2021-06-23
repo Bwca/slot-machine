@@ -1,0 +1,26 @@
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { SlotSymbolNames, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '../shared/constants';
+import { Result } from '../shared/models';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ResultService {
+  private result$$: Subject<Result> = new Subject();
+  private slotTextureSymbolMap = new Map<string, SlotSymbolNames>(
+    Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.entries()).map(
+      (i) => i.reverse() as [string, SlotSymbolNames]
+    )
+  );
+
+  public result$ = this.result$$.asObservable();
+
+  constructor() {}
+
+  public set newResult(r: Result) {
+    const result = r.map((i) => i.map((j) => this.slotTextureSymbolMap.get(j) ?? ''));
+    console.log(result);
+    this.result$$.next(result);
+  }
+}
