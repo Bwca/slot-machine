@@ -1,0 +1,27 @@
+:host {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  grid-template-areas:
+    'slotMachine payTable'
+    'balance balance'
+    'debug debug';
+}
+
+app-slot-machine-canvas {
+  grid-area: slotMachine;
+}
+
+app-pay-table {
+  grid-area: payTable;
+}
+
+app-balance {
+  grid-area: balance;
+}
+
+app-debug-menu {
+  grid-area: debug;
+}
