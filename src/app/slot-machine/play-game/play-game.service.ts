@@ -89,7 +89,6 @@ export class PlayGameService {
         rc.addChild(symbol);
       }
       this.reels.push(reel);
-      console.log(reel.symbols);
     }
     app.stage.addChild(reelContainer);
 

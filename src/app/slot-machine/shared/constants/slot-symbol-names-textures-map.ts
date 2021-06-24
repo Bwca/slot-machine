@@ -13,5 +13,3 @@ export const SLOT_TEXTURE_SYMBOL_MAP = new Map<string, SlotSymbolNames>(
     (i) => i.reverse() as [string, SlotSymbolNames]
   )
 );
-
-console.log(SLOT_TEXTURE_SYMBOL_MAP);

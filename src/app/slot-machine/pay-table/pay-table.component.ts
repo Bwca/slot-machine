@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PrizeService } from '../prize/prize.service';
 
 @Component({
   selector: 'app-pay-table',
@@ -6,10 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./pay-table.component.scss']
 })
 export class PayTableComponent implements OnInit {
-
-  constructor() { }
+  constructor(private prize: PrizeService) {}
 
   ngOnInit(): void {
+    this.prize.prize$.subscribe(console.log);
   }
-
 }

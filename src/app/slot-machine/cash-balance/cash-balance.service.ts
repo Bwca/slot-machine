@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CashBalanceService {
-  private totalCash$$ = new BehaviorSubject<number>(1500);
+  private totalCash$$ = new BehaviorSubject<number>(3);
 
   public totalCash$ = this.totalCash$$.asObservable();
 

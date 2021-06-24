@@ -20,7 +20,6 @@ export class ResultService {
 
   public set newResult(r: Result) {
     const result = r.map((i) => i.map((j) => this.slotTextureSymbolMap.get(j) ?? ''));
-    console.log(result);
     this.result$$.next(result);
   }
 }

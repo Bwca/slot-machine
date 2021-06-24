@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { filter, withLatestFrom } from 'rxjs/operators';
 import { CashBalanceService } from '../cash-balance/cash-balance.service';
 
 @Component({
@@ -14,6 +15,16 @@ export class BalanceComponent implements OnInit {
   constructor(private cashBalance: CashBalanceService) {}
 
   ngOnInit(): void {
-    this.cashControl.valueChanges.subscribe((v) => (this.cashBalance.cash = v));
+    this.cashControl.valueChanges
+      .pipe(
+        withLatestFrom(this.cashBalance.totalCash$),
+        filter(
+          ([newBalance, currentBalance]) =>
+            newBalance !== currentBalance && Number.isInteger(newBalance)
+        )
+      )
+      .subscribe(([v]) => (this.cashBalance.cash = v));
+
+    this.cashBalance.totalCash$.subscribe((i) => this.cashControl.setValue(i));
   }
 }
