@@ -101,7 +101,7 @@ export class PlayGameService {
     this.bottomButton.beginFill(0, 1);
     this.bottomButton.drawRect(0, SYMBOL_SIZE * 3 + margin, app.screen.width, margin);
 
-    const playText = new PIXI.Text('SPIN!', STYLE);
+    const playText = new PIXI.Text('SPIN 2 WIN!', STYLE);
     playText.x = Math.round((this.bottomButton.width - playText.width) / 2);
     playText.y = app.screen.height - margin + Math.round(margin - playText.height);
     this.bottomButton.addChild(playText);

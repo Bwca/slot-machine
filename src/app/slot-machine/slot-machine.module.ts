@@ -7,6 +7,7 @@ import { BalanceComponent } from './balance/balance.component';
 import { DebugMenuComponent } from './debug-menu/debug-menu.component';
 import { PayTableComponent } from './pay-table/pay-table.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { IsWinningConditionPipe } from './shared/pipes/is-winning-condition/is-winning-condition.pipe';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     SlotMachineCanvasComponent,
     BalanceComponent,
     DebugMenuComponent,
-    PayTableComponent
+    PayTableComponent,
+    IsWinningConditionPipe
   ],
   imports: [CommonModule, ReactiveFormsModule],
   exports: [SlotMachineComponent]

@@ -1,1 +1,71 @@
-<p>pay-table works!</p>
+
+    <article *ngFor="let pos of ['top', 'middle', 'bottom']; let i=index" [class.win] = "currentPrize | isWinningCondition:  winTypes.ThreeCherry: i"
+    >
+        <div class="images-block">
+            <img *ngFor="let i of arr(3)" [src]="slotTextures.get(slotSymbolNames.Cherry)" />
+        </div>
+        <div>
+            <div>
+                {{pos}}: {{rewards[winTypes.ThreeCherry][i]}}
+                <br />
+            </div>
+        </div>
+    </article>
+    
+    <article [class.win]="currentPrize | isWinningCondition:  winTypes.ThreeSevenSymbols">
+        <div class="images-block">
+            <img *ngFor="let i of arr(3)" [src]="slotTextures.get(slotSymbolNames.Seven)" />
+        </div>
+        <div>
+            any: {{rewards[winTypes.ThreeSevenSymbols]}}
+        </div>
+    </article>
+    
+    <article [class.win]="currentPrize | isWinningCondition:  winTypes.CherryAndSeven">
+        <div class="images-block">
+            <img [src]="slotTextures.get(slotSymbolNames.Cherry)" />
+            <span>or</span>
+            <img [src]="slotTextures.get(slotSymbolNames.Seven)" />
+        </div>
+        <div>
+            any: {{rewards[winTypes.CherryAndSeven]}}
+        </div>
+    </article>
+    
+    <article [class.win]="currentPrize | isWinningCondition: winTypes.Three3Bars">
+        <div class="images-block">
+            <img *ngFor="let i of arr(3)" [src]="slotTextures.get(slotSymbolNames.ThreeBars)" />
+        </div>
+        <div>
+            any: {{rewards[winTypes.Three3Bars]}}
+        </div>
+    </article>
+    
+    <article [class.win]="currentPrize | isWinningCondition: winTypes.Three2Bars">
+        <div class="images-block">
+            <img *ngFor="let i of arr(3)" [src]="slotTextures.get(slotSymbolNames.TwoBars)" />
+        </div>
+        <div>
+            any: {{rewards[winTypes.Three2Bars]}}
+        </div>
+    </article>
+    
+    <article [class.win]="currentPrize | isWinningCondition: winTypes.ThreeBars">
+        <div class="images-block">
+            <img *ngFor="let i of arr(3)" [src]="slotTextures.get(slotSymbolNames.SingleBar)" />
+        </div>
+        <div>
+            any: {{rewards[winTypes.ThreeBars]}}
+        </div>
+    </article>
+    
+    <article [class.win]="currentPrize | isWinningCondition: winTypes.BarsCombo">
+        <div class="images-block">
+            <img [src]="slotTextures.get(slotSymbolNames.ThreeBars)" />
+            <img [src]="slotTextures.get(slotSymbolNames.TwoBars)" />        
+            <img [src]="slotTextures.get(slotSymbolNames.SingleBar)" />
+        </div>
+        <div>
+            any: {{rewards[winTypes.BarsCombo]}}
+        </div>
+    </article>

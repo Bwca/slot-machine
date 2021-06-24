@@ -1,13 +1,13 @@
 :host {
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+  max-width: 1600px;
+  margin: auto;
+  justify-items: center;
   display: grid;
   grid-template-rows: 1fr auto auto;
+  grid-template-columns: auto 1fr;
   grid-template-areas:
-    'slotMachine payTable'
-    'balance balance'
-    'debug debug';
+    'slotMachine balance'
+    'payTable debug';
 }
 
 app-slot-machine-canvas {
@@ -16,6 +16,7 @@ app-slot-machine-canvas {
 
 app-pay-table {
   grid-area: payTable;
+  margin-top: 70px;
 }
 
 app-balance {
@@ -24,4 +25,11 @@ app-balance {
 
 app-debug-menu {
   grid-area: debug;
+}
+
+app-slot-machine-canvas,
+app-pay-table,
+app-balance,
+app-debug-menu {
+  align-self: flex-start;
 }
