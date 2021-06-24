@@ -1,0 +1,27 @@
+:host {
+  font-variant: small-caps;
+}
+
+img {
+  max-width: 50px;
+}
+
+fieldset + fieldset {
+  margin-top: 20px;
+}
+
+fieldset {
+  border-color: darkslategray;
+  border-radius: 5px;
+  color: darkgrey;
+  font-weight: bold;
+}
+
+.input-wrapper {
+  display: inline-block;
+  background-color: #101010;
+  margin: 1px;
+  box-sizing: border-box;
+  padding: 2px 3px;
+  border-radius: 2px;
+}

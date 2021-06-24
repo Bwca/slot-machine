@@ -25,6 +25,7 @@ export class PayTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.prize.prize$.subscribe((i) => {
+      console.log(i);
       this.currentPrize = i;
       this.cdr.markForCheck();
     });

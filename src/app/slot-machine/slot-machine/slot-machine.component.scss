@@ -3,10 +3,10 @@
   margin: auto;
   justify-items: center;
   display: grid;
-  grid-template-rows: 1fr auto auto;
-  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
   grid-template-areas:
     'slotMachine balance'
+    'slotMachine debug'
     'payTable debug';
 }
 
@@ -20,6 +20,7 @@ app-pay-table {
 }
 
 app-balance {
+  align-self: center;
   grid-area: balance;
 }
 
@@ -29,7 +30,6 @@ app-debug-menu {
 
 app-slot-machine-canvas,
 app-pay-table,
-app-balance,
 app-debug-menu {
   align-self: flex-start;
 }

@@ -14,7 +14,7 @@ export class IsWinningConditionPipe implements PipeTransform {
     if (index === undefined) {
       return value.some(({ type }) => type === winType);
     } else if (Number.isInteger(index)) {
-      return value[index].type === winType;
+      return value[index]?.type === winType;
     }
     return false;
   }

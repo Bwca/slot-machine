@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 
 import * as PIXI from 'pixi.js';
@@ -16,8 +16,9 @@ import {
   STYLE,
   SYMBOL_SIZE
 } from '../shared/constants';
-import { Reel, Result } from '../shared/models';
+import { FixerSettings, Reel, Result } from '../shared/models';
 import { TweeningService } from '../tweening/tweening.service';
+import { FixerService } from '../fixer/fixer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,12 +30,14 @@ export class PlayGameService {
     PIXI.Texture.from(i)
   );
   private isLocked$$ = new BehaviorSubject<boolean>(false);
-  private isGameInProcess = false;
+  private isGameInProgress$$ = new BehaviorSubject(false);
+  private fixedSettings: FixerSettings | null = null;
 
   constructor(
     private tweeningService: TweeningService,
     private resultService: ResultService,
-    private cashBalance: CashBalanceService
+    private cashBalance: CashBalanceService,
+    private fixer: FixerService
   ) {
     this.cashBalance.totalCash$
       .pipe(withLatestFrom(this.isLocked$$))
@@ -53,6 +56,14 @@ export class PlayGameService {
         (this.bottomButton as any).removeListener('pointerdown', this.startPlay);
       }
     });
+
+    combineLatest([this.isGameInProgress$$, this.fixer.fixerSettings$]).subscribe(
+      ([isInProgress, settings]) => {
+        if (!isInProgress) {
+          this.fixedSettings = settings;
+        }
+      }
+    );
   }
 
   public loadAssets(app: PIXI.Application) {
@@ -116,14 +127,14 @@ export class PlayGameService {
   }
 
   private startPlay = () => {
-    if (this.isGameInProcess) {
+    if (this.isGameInProgress$$.value) {
       return;
     }
 
     const backout = (amount: number) => (t: number) =>
       --t * t * ((amount + 1) * t + amount) + 1;
 
-    this.isGameInProcess = true;
+    this.isGameInProgress$$.next(true);
     this.cashBalance.decreaseCash();
 
     this.reels.forEach((r, i) => {
@@ -141,7 +152,7 @@ export class PlayGameService {
         i === this.reels.length - 1
           ? () => {
               const result: Result = [[], [], []];
-              this.isGameInProcess = false;
+              this.isGameInProgress$$.next(false);
               setTimeout(() => {
                 this.reels.forEach(({ symbols }) => {
                   symbols.forEach((s) => {
@@ -152,6 +163,7 @@ export class PlayGameService {
                     }
                   });
                 });
+                console.log(result);
                 this.resultService.newResult = result;
               });
             }
@@ -161,22 +173,48 @@ export class PlayGameService {
   };
 
   private updateReelsOnSpin() {
-    this.reels.forEach((r) => {
-      r.blur.blurY = (r.position - r.previousPosition) * 8;
-      r.previousPosition = r.position;
-      r.symbols.forEach((s, j) => {
-        const previousY = s.y;
-        s.y = ((r.position + j) % r.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE;
-        if (s.y < 0 && previousY > SYMBOL_SIZE) {
-          s.texture =
-            this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
-          s.scale.x = s.scale.y = Math.min(
-            SYMBOL_SIZE / s.texture.width,
-            SYMBOL_SIZE / s.texture.height
+    this.reels.forEach((reel, reelIndex) => {
+      reel.blur.blurY = (reel.position - reel.previousPosition) * 8;
+      reel.previousPosition = reel.position;
+      reel.symbols.forEach((sprite, spriteIndex) => {
+        const previousY = sprite.y;
+        sprite.y =
+          ((reel.position + spriteIndex) % reel.symbols.length) * SYMBOL_SIZE -
+          SYMBOL_SIZE;
+        /* if (sprite.y < 0 && previousY > SYMBOL_SIZE) {
+          const newSpriteTexture =
+            this.slotTextures[this.getNewTextureIndex(reelIndex, previousY)];
+          sprite.texture = newSpriteTexture;
+          sprite.scale.x = sprite.scale.y = Math.min(
+            SYMBOL_SIZE / sprite.texture.width,
+            SYMBOL_SIZE / sprite.texture.height
           );
-          s.x = Math.round((SYMBOL_SIZE - s.width) / 2);
-        }
+          sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
+        } */
       });
     });
+  }
+
+  private getNewTextureIndex(rIndex: number, sIndex: number): number {
+    if (!this.fixedSettings) {
+      return this.getRandomTextureIndex;
+    }
+    const fixedReelSettings = this.fixedSettings.find(
+      ({ reelIndex, row }) => reelIndex === rIndex
+    );
+
+    if (
+      !fixedReelSettings ||
+      fixedReelSettings.spriteIndex === null ||
+      fixedReelSettings.row === null
+    ) {
+      return this.getRandomTextureIndex;
+    }
+
+    return fixedReelSettings.spriteIndex;
+  }
+
+  private get getRandomTextureIndex(): number {
+    return Math.floor(Math.random() * this.slotTextures.length);
   }
 }

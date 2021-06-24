@@ -10,3 +10,4 @@ export { STYLE } from './style';
 export { SlotSymbolNames } from './slot-symbol-names';
 export { SLOT_SYMBOL_NAMES_TEXTURES_MAP } from './slot-symbol-names-textures-map';
 export { REWARDS } from './rewards';
+export { GameMode } from './game-mode';

@@ -3,8 +3,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-variant: small-caps;
+  font-weight: bold;
 }
 
-p {
-  text-align: center;
+input {
+  border: none;
+  background-color: darkslategrey;
+  color: darkturquoise;
+  font-size: 20px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 5px;
 }
