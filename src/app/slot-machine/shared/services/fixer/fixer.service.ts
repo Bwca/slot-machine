@@ -14,7 +14,6 @@ export class FixerService {
   constructor() {}
 
   public set settings(s: FixerSettings | null) {
-    console.log(s);
     this.fixerSettings$$.next(s);
   }
 }

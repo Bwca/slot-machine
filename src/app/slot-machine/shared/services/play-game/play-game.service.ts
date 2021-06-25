@@ -157,8 +157,6 @@ export class PlayGameService {
       graphics.endFill();
       this.app.stage.addChild(graphics);
 
-      console.log(currentX, currentX + lineSize);
-
       currentX += step;
     }
   }
