@@ -8,9 +8,8 @@ describe('SlotMachineCanvasComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SlotMachineCanvasComponent ]
-    })
-    .compileComponents();
+      declarations: [SlotMachineCanvasComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

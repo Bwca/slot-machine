@@ -6,29 +6,19 @@ import * as PIXI from 'pixi.js';
 
 import { CashBalanceService } from '../cash-balance/cash-balance.service';
 import { ResultService } from '../result/result.service';
-import {
-  MAX_REELS,
-  REEL_WIDTH,
-  SLOT_SYMBOL_NAMES_TEXTURES_MAP,
-  SPIN_DELAY_PER_REEL,
-  SPIN_TIME,
-  STYLE,
-  SYMBOL_SIZE
-} from '../../constants';
+import { MAX_REELS, REEL_WIDTH, SLOT_SYMBOL_NAMES_TEXTURES_MAP, SPIN_DELAY_PER_REEL, SPIN_TIME, STYLE, SYMBOL_SIZE } from '../../constants';
 import { FixerSettings, Reel, Result } from '../../models';
 import { TweeningService } from '../tweening/tweening.service';
 import { FixerService } from '../fixer/fixer.service';
 import { PrizeService } from '../prize/prize.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlayGameService {
   private reels: Reel[] = [];
   private bottomButton = new PIXI.Graphics();
-  private slotTextures = Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.values()).map((i) =>
-    PIXI.Texture.from(i)
-  );
+  private slotTextures = Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.values()).map((i) => PIXI.Texture.from(i));
   private isLocked$$ = new BehaviorSubject<boolean>(false);
   private isGameInProgress$$ = new BehaviorSubject(false);
   private fixedSettings: FixerSettings | null = null;
@@ -59,25 +49,21 @@ export class PlayGameService {
   }
 
   private subscribeToFixedChangesUpdates(): void {
-    combineLatest([this.isGameInProgress$$, this.fixer.fixerSettings$]).subscribe(
-      ([isInProgress, settings]) => {
-        if (!isInProgress) {
-          this.fixedSettings = settings;
-        }
+    combineLatest([this.isGameInProgress$$, this.fixer.fixerSettings$]).subscribe(([isInProgress, settings]) => {
+      if (!isInProgress) {
+        this.fixedSettings = settings;
       }
-    );
+    });
   }
 
   private lockGameBasedOnPlayerCashBalance(): void {
-    this.cashBalance.isBroke$
-      .pipe(withLatestFrom(this.isLocked$$))
-      .subscribe(([isBroke, isLocked]) => {
-        if (isLocked && !isBroke) {
-          this.isLocked$$.next(false);
-        } else if (isBroke) {
-          this.isLocked$$.next(true);
-        }
-      });
+    this.cashBalance.isBroke$.pipe(withLatestFrom(this.isLocked$$)).subscribe(([isBroke, isLocked]) => {
+      if (isLocked && !isBroke) {
+        this.isLocked$$.next(false);
+      } else if (isBroke) {
+        this.isLocked$$.next(true);
+      }
+    });
 
     this.isLocked$$.subscribe((i) => {
       if (!i) {
@@ -104,7 +90,7 @@ export class PlayGameService {
         symbols: [],
         position: 0,
         previousPosition: 0,
-        blur: new PIXI.filters.BlurFilter()
+        blur: new PIXI.filters.BlurFilter(),
       };
 
       reel.blur.blurX = 0;
@@ -123,12 +109,7 @@ export class PlayGameService {
     top.drawRect(0, 0, this.app.screen.width, margin);
     this.app.stage.addChild(top);
     this.bottomButton.beginFill(0, 1);
-    this.bottomButton.drawRect(
-      0,
-      SYMBOL_SIZE * 3 + margin,
-      this.app.screen.width,
-      margin
-    );
+    this.bottomButton.drawRect(0, SYMBOL_SIZE * 3 + margin, this.app.screen.width, margin);
 
     const playText = new PIXI.Text('SPIN 2 WIN!', STYLE);
     playText.x = Math.round((this.bottomButton.width - playText.width) / 2);
@@ -196,10 +177,7 @@ export class PlayGameService {
       const symbol = new PIXI.Sprite(this.slotTextures[this.getRandomTextureIndex]);
 
       symbol.y = i * SYMBOL_SIZE;
-      symbol.scale.x = symbol.scale.y = Math.min(
-        SYMBOL_SIZE / symbol.width,
-        SYMBOL_SIZE / symbol.height
-      );
+      symbol.scale.x = symbol.scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
       symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
       reel.symbols.push(symbol);
       container.addChild(symbol);
@@ -211,8 +189,7 @@ export class PlayGameService {
       return;
     }
 
-    const backout = (amount: number) => (t: number) =>
-      --t * t * ((amount + 1) * t + amount) + 1;
+    const backout = (amount: number) => (t: number) => --t * t * ((amount + 1) * t + amount) + 1;
 
     this.isGameInProgress$$.next(true);
     this.cashBalance.decreaseCash();
@@ -262,8 +239,7 @@ export class PlayGameService {
   private updateSpinningReelSprites(reel: Reel, reelIndex: number): void {
     reel.symbols.forEach((sprite, spriteIndex) => {
       const previousY = sprite.y;
-      sprite.y =
-        ((reel.position + spriteIndex) % reel.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE;
+      sprite.y = ((reel.position + spriteIndex) % reel.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE;
 
       const setting = this.getFixedSpriteSetting(reelIndex, spriteIndex - 1);
 
@@ -278,23 +254,15 @@ export class PlayGameService {
     });
   }
 
-  private setReelSpriteTexture(
-    sprite: PIXI.Sprite,
-    textureIndex: number = this.getRandomTextureIndex
-  ) {
+  private setReelSpriteTexture(sprite: PIXI.Sprite, textureIndex: number = this.getRandomTextureIndex) {
     const newSpriteTexture = this.slotTextures[textureIndex];
     sprite.texture = newSpriteTexture;
-    sprite.scale.x = sprite.scale.y = Math.min(
-      SYMBOL_SIZE / sprite.texture.width,
-      SYMBOL_SIZE / sprite.texture.height
-    );
+    sprite.scale.x = sprite.scale.y = Math.min(SYMBOL_SIZE / sprite.texture.width, SYMBOL_SIZE / sprite.texture.height);
     sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
   }
 
   private getFixedSpriteSetting(reelIndex: number, spriteIndex: number) {
-    return this.fixedSettings?.find(
-      (i) => i.reelIndex === reelIndex && i.row === spriteIndex
-    );
+    return this.fixedSettings?.find((i) => i.reelIndex === reelIndex && i.row === spriteIndex);
   }
 
   private get getRandomTextureIndex(): number {

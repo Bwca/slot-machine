@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   selector: 'app-slot-machine',
   templateUrl: './slot-machine.component.html',
   styleUrls: ['./slot-machine.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SlotMachineComponent implements OnInit {
   constructor() {}

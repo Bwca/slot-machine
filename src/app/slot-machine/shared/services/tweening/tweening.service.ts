@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Reel, Tween } from '../../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TweeningService {
   private tweening: Tween[] = [];
@@ -28,7 +28,7 @@ export class TweeningService {
       time,
       change: onchange,
       complete: oncomplete,
-      start: Date.now()
+      start: Date.now(),
     };
 
     this.tweening.push(tween);

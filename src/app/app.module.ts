@@ -9,6 +9,6 @@ import { SlotMachineModule } from './slot-machine/slot-machine.module';
   declarations: [AppComponent],
   imports: [BrowserModule, AppRoutingModule, SlotMachineModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

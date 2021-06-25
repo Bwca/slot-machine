@@ -16,9 +16,9 @@ import { IsWinningConditionPipe } from './shared/pipes/is-winning-condition/is-w
     BalanceComponent,
     DebugMenuComponent,
     PayTableComponent,
-    IsWinningConditionPipe
+    IsWinningConditionPipe,
   ],
   imports: [CommonModule, ReactiveFormsModule],
-  exports: [SlotMachineComponent]
+  exports: [SlotMachineComponent],
 })
 export class SlotMachineModule {}

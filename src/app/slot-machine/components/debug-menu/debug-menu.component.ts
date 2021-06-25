@@ -8,7 +8,7 @@ import { FixerSettings } from '../../shared/models';
 @Component({
   selector: 'app-debug-menu',
   templateUrl: './debug-menu.component.html',
-  styleUrls: ['./debug-menu.component.scss']
+  styleUrls: ['./debug-menu.component.scss'],
 })
 export class DebugMenuComponent implements OnInit {
   public namesTexturesMap = Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.values());
@@ -35,10 +35,10 @@ export class DebugMenuComponent implements OnInit {
           this.fb.group({
             reelIndex: i,
             spriteIndex: null,
-            row: null
+            row: null,
           })
         )
-      )
+      ),
     });
 
     this.form.get('reels')?.disable();

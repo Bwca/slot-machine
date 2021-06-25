@@ -3,5 +3,5 @@ export enum SlotSymbolNames {
   TwoBars = '2xBAR',
   SingleBar = 'BAR',
   Seven = '7',
-  Cherry = 'CHERRY'
+  Cherry = 'CHERRY',
 }

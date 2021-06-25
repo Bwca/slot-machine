@@ -1,26 +1,29 @@
 <form [formGroup]="form">
   <fieldset>
     <legend>game mode</legend>
-    <input type="radio" [value]="gameMode.Fair" formControlName="mode" /> fair
-    <input type="radio" [value]="gameMode.Fixed" formControlName="mode" /> fixed
+    <input type="radio" [value]="gameMode.Fair" formControlName="mode" />
+    fair
+    <input type="radio" [value]="gameMode.Fixed" formControlName="mode" />
+    fixed
   </fieldset>
-  
-  <ng-container formArrayName="reels" *ngFor="let reel of reelFormArray; let i = index;">
+
+  <ng-container formArrayName="reels" *ngFor="let reel of reelFormArray; let i = index">
     <fieldset [formGroupName]="i">
-        <legend>Reel {{i + 1}}</legend>
-        <ng-container *ngFor="let url of namesTexturesMap; let textureIndex = index">
-            <div class="input-wrapper">
-                <input type="radio" formControlName="spriteIndex" [value]="textureIndex" />
-                <img [src]="url" />
-            </div>
-        </ng-container>
-        <br />
-        <br />
-        <ng-container *ngFor="let pos of ['top', 'middle', 'bottom']; let row=index" class="container">
-            <div class="input-wrapper">
-                <input type="radio" formControlName="row" [value]="row" /> {{ pos }}
-            </div>
-        </ng-container>
-      </fieldset>
+      <legend>Reel {{ i + 1 }}</legend>
+      <ng-container *ngFor="let url of namesTexturesMap; let textureIndex = index">
+        <div class="input-wrapper">
+          <input type="radio" formControlName="spriteIndex" [value]="textureIndex" />
+          <img [src]="url" />
+        </div>
+      </ng-container>
+      <br />
+      <br />
+      <ng-container *ngFor="let pos of ['top', 'middle', 'bottom']; let row = index" class="container">
+        <div class="input-wrapper">
+          <input type="radio" formControlName="row" [value]="row" />
+          {{ pos }}
+        </div>
+      </ng-container>
+    </fieldset>
   </ng-container>
 </form>

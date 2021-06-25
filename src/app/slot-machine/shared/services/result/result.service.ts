@@ -5,14 +5,12 @@ import { SlotSymbolNames, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '../../constants
 import { Result } from '../../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ResultService {
   private result$$: Subject<Result> = new Subject();
   private slotTextureSymbolMap = new Map<string, SlotSymbolNames>(
-    Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.entries()).map(
-      (i) => i.reverse() as [string, SlotSymbolNames]
-    )
+    Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.entries()).map((i) => i.reverse() as [string, SlotSymbolNames])
   );
 
   public result$ = this.result$$.asObservable();

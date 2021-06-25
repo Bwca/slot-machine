@@ -5,7 +5,7 @@ import { PlayGameService } from '../../shared/services/play-game/play-game.servi
 @Component({
   selector: 'app-slot-machine-canvas',
   template: '',
-  styleUrls: ['./slot-machine-canvas.component.scss']
+  styleUrls: ['./slot-machine-canvas.component.scss'],
 })
 export class SlotMachineCanvasComponent implements OnInit {
   constructor(private hostElement: ElementRef, private playGame: PlayGameService) {}

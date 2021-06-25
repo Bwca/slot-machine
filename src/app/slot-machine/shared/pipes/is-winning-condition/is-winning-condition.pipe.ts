@@ -4,7 +4,7 @@ import { WinTypes } from '../../constants';
 import { WinResult } from '../../models';
 
 @Pipe({
-  name: 'isWinningCondition'
+  name: 'isWinningCondition',
 })
 export class IsWinningConditionPipe implements PipeTransform {
   transform(value: WinResult, winType: WinTypes, index: number | null = null): boolean {

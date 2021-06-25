@@ -5,7 +5,7 @@ import { WinResult } from '../../models';
 import { PrizeService } from '../prize/prize.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CashBalanceService {
   private totalCash$$ = new BehaviorSubject<number>(10);

@@ -8,9 +8,8 @@ describe('SlotMachineComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SlotMachineComponent ]
-    })
-    .compileComponents();
+      declarations: [SlotMachineComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

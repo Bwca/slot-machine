@@ -5,5 +5,5 @@ export enum WinTypes {
   Three3Bars = 'Three3Bars',
   Three2Bars = 'Three2Bars',
   ThreeBars = 'ThreeBars',
-  BarsCombo = 'BarsCombo'
+  BarsCombo = 'BarsCombo',
 }

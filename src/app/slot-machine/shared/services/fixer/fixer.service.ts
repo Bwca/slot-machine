@@ -4,7 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { FixerSettings } from '../../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FixerService {
   private fixerSettings$$ = new BehaviorSubject<FixerSettings | null>(null);

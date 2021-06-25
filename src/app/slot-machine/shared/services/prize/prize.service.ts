@@ -6,7 +6,7 @@ import { REWARDS, SlotSymbolNames, WinTypes } from '../../constants';
 import { Result, WinResult, WinsMap } from '../../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PrizeService {
   private prize$$ = new BehaviorSubject<WinResult>(null);
@@ -18,11 +18,7 @@ export class PrizeService {
   }
 
   private checkPrize(result: Result) {
-    const bars: string[] = [
-      SlotSymbolNames.SingleBar,
-      SlotSymbolNames.TwoBars,
-      SlotSymbolNames.ThreeBars
-    ];
+    const bars: string[] = [SlotSymbolNames.SingleBar, SlotSymbolNames.TwoBars, SlotSymbolNames.ThreeBars];
     const wins: WinResult = [];
 
     result.forEach((r, row) => {
@@ -31,7 +27,7 @@ export class PrizeService {
           wins.push({
             amount: this.winsMap[WinTypes.ThreeCherry][row],
             row,
-            type: WinTypes.ThreeCherry
+            type: WinTypes.ThreeCherry,
           });
           break;
         }
@@ -40,18 +36,16 @@ export class PrizeService {
           wins.push({
             amount: this.winsMap[WinTypes.ThreeSevenSymbols],
             row,
-            type: WinTypes.ThreeSevenSymbols
+            type: WinTypes.ThreeSevenSymbols,
           });
           break;
         }
 
-        case r.every(
-          (i) => i === SlotSymbolNames.Cherry || i === SlotSymbolNames.Seven
-        ): {
+        case r.every((i) => i === SlotSymbolNames.Cherry || i === SlotSymbolNames.Seven): {
           wins.push({
             amount: this.winsMap[WinTypes.CherryAndSeven],
             row,
-            type: WinTypes.CherryAndSeven
+            type: WinTypes.CherryAndSeven,
           });
 
           break;
@@ -61,7 +55,7 @@ export class PrizeService {
           wins.push({
             amount: this.winsMap[WinTypes.Three3Bars],
             row,
-            type: WinTypes.Three3Bars
+            type: WinTypes.Three3Bars,
           });
           break;
         }
@@ -70,7 +64,7 @@ export class PrizeService {
           wins.push({
             amount: this.winsMap[WinTypes.Three2Bars],
             row,
-            type: WinTypes.Three2Bars
+            type: WinTypes.Three2Bars,
           });
           break;
         }
@@ -79,7 +73,7 @@ export class PrizeService {
           wins.push({
             amount: this.winsMap[WinTypes.ThreeBars],
             row,
-            type: WinTypes.ThreeBars
+            type: WinTypes.ThreeBars,
           });
           break;
         }
@@ -88,7 +82,7 @@ export class PrizeService {
           wins.push({
             amount: this.winsMap[WinTypes.BarsCombo],
             row,
-            type: WinTypes.BarsCombo
+            type: WinTypes.BarsCombo,
           });
           break;
         }

@@ -7,7 +7,7 @@ import { CashBalanceService } from '../../shared/services/cash-balance/cash-bala
 @Component({
   selector: 'app-balance',
   templateUrl: './balance.component.html',
-  styleUrls: ['./balance.component.scss']
+  styleUrls: ['./balance.component.scss'],
 })
 export class BalanceComponent implements OnInit {
   public balance$ = this.cashBalance.totalCash$;
@@ -19,10 +19,7 @@ export class BalanceComponent implements OnInit {
     this.cashControl.valueChanges
       .pipe(
         withLatestFrom(this.cashBalance.totalCash$),
-        filter(
-          ([newBalance, currentBalance]) =>
-            newBalance !== currentBalance && Number.isInteger(newBalance)
-        )
+        filter(([newBalance, currentBalance]) => newBalance !== currentBalance && Number.isInteger(newBalance))
       )
       .subscribe(([v]) => (this.cashBalance.cash = v));
 

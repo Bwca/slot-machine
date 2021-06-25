@@ -15,5 +15,5 @@ export const STYLE = new PIXI.TextStyle({
   dropShadowDistance: 0,
   wordWrap: true,
   wordWrapWidth: 440,
-  fontVariant: 'small-caps'
+  fontVariant: 'small-caps',
 });
