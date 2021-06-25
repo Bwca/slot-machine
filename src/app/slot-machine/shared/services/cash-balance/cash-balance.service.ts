@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { WinResult } from '../../models';
+import { map } from 'rxjs/operators';
+
 import { PrizeService } from '../prize/prize.service';
 
 @Injectable({

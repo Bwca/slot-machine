@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js';
 
 export interface Reel {
+  blur: any;
   container: PIXI.Container;
-  symbols: PIXI.Sprite[];
   position: number;
   previousPosition: number;
-  blur: any;
+  symbols: PIXI.Sprite[];
 }

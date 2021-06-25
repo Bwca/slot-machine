@@ -15,8 +15,6 @@ export class ResultService {
 
   public result$ = this.result$$.asObservable();
 
-  constructor() {}
-
   public set newResult(r: Result) {
     const result = r.map((i) => i.map((j) => this.slotTextureSymbolMap.get(j) ?? ''));
     this.result$$.next(result);

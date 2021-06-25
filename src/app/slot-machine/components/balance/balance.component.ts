@@ -2,11 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { filter, withLatestFrom } from 'rxjs/operators';
 
-import { CashBalanceService } from '../../shared/services/cash-balance/cash-balance.service';
+import { CashBalanceService } from '@slotMachine/shared/services/cash-balance/cash-balance.service';
 
 @Component({
   selector: 'app-balance',
-  templateUrl: './balance.component.html',
+  template: `
+    <label>
+      balance:
+      <input type="number" [formControl]="cashControl" />
+    </label>
+  `,
   styleUrls: ['./balance.component.scss'],
 })
 export class BalanceComponent implements OnInit {

@@ -8,8 +8,6 @@ import { Reel, Tween } from '../../models';
 export class TweeningService {
   private tweening: Tween[] = [];
 
-  constructor() {}
-
   public tweenTo(
     object: Reel,
     property: keyof Reel,
@@ -20,15 +18,15 @@ export class TweeningService {
     oncomplete?: (() => void) | null
   ) {
     const tween: Tween = {
+      change: onchange,
+      complete: oncomplete,
+      easing,
       object,
       property,
       propertyBeginValue: object[property as keyof object],
-      target,
-      easing,
-      time,
-      change: onchange,
-      complete: oncomplete,
       start: Date.now(),
+      target,
+      time,
     };
 
     this.tweening.push(tween);

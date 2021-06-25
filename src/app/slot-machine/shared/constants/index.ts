@@ -1,13 +1,11 @@
-import { from } from 'rxjs';
-
+export { GameMode } from './game-mode';
 export { MAX_REELS } from './max-reels';
 export { REEL_WIDTH } from './reel-width';
-export { WinTypes } from './win-types';
+export { REWARDS } from './rewards';
+export { SLOT_SYMBOL_NAMES_TEXTURES_MAP } from './slot-symbol-names-textures-map';
+export { SlotSymbolNames } from './slot-symbol-names';
 export { SPIN_DELAY_PER_REEL } from './spin-delay-per-reel';
 export { SPIN_TIME } from './spin-time';
-export { SYMBOL_SIZE } from './symbol-size';
 export { STYLE } from './style';
-export { SlotSymbolNames } from './slot-symbol-names';
-export { SLOT_SYMBOL_NAMES_TEXTURES_MAP } from './slot-symbol-names-textures-map';
-export { REWARDS } from './rewards';
-export { GameMode } from './game-mode';
+export { SYMBOL_SIZE } from './symbol-size';
+export { WinTypes } from './win-types';

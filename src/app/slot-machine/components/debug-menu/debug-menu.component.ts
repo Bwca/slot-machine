@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
-import { FixerService } from '../../shared/services/fixer/fixer.service';
-import { GameMode, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '../../shared/constants';
-import { FixerSettings } from '../../shared/models';
+import { FixerService } from '@slotMachine/shared/services/fixer/fixer.service';
+import { GameMode, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '@slotMachine/shared/constants';
+import { FixerSettings } from '@slotMachine/shared/models';
 
 @Component({
   selector: 'app-debug-menu',
