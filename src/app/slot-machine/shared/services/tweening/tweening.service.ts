@@ -16,7 +16,7 @@ export class TweeningService {
     easing: (t: any) => number,
     onchange: null,
     oncomplete?: (() => void) | null
-  ) {
+  ): Tween {
     const tween: Tween = {
       change: onchange,
       complete: oncomplete,
@@ -33,28 +33,27 @@ export class TweeningService {
     return tween;
   }
 
-  public updateTweening() {
+  public updateTweening(): void {
     const lerp = (a1: number, a2: number, t: number) => a1 * (1 - t) + a2 * t;
     const now = Date.now();
-    const remove: any[] = [];
-    for (let i = 0; i < this.tweening.length; i++) {
-      const t = this.tweening[i];
-      const phase = Math.min(1, (now - t.start) / t.time);
+    const remove: Tween[] = [];
 
-      t.object[t.property] = lerp(t.propertyBeginValue, t.target, t.easing(phase));
-      if (t.change) {
-        t.change(t);
+    this.tweening.forEach((tween) => {
+      const phase = Math.min(1, (now - tween.start) / tween.time);
+
+      tween.object[tween.property] = lerp(tween.propertyBeginValue, tween.target, tween.easing(phase));
+      if (tween.change) {
+        tween.change(tween);
       }
       if (phase === 1) {
-        t.object[t.property] = t.target;
-        if (t.complete) {
-          t.complete(t);
+        tween.object[tween.property] = tween.target;
+        if (tween.complete) {
+          tween.complete(tween);
         }
-        remove.push(t);
+        remove.push(tween);
       }
-    }
-    for (let i = 0; i < remove.length; i++) {
-      this.tweening.splice(this.tweening.indexOf(remove[i]), 1);
-    }
+    });
+
+    remove.forEach((r) => this.tweening.splice(this.tweening.indexOf(r), 1));
   }
 }

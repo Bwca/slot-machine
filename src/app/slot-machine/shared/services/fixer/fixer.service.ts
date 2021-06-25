@@ -11,8 +11,6 @@ export class FixerService {
 
   public fixerSettings$ = this.fixerSettings$$.asObservable();
 
-  constructor() {}
-
   public set settings(s: FixerSettings | null) {
     this.fixerSettings$$.next(s);
   }

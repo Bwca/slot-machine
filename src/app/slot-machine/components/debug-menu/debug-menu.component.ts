@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 import { FixerService } from '@slotMachine/shared/services/fixer/fixer.service';
 import { GameMode, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '@slotMachine/shared/constants';
@@ -23,7 +23,7 @@ export class DebugMenuComponent implements OnInit {
     this.subscribeToValueChanges();
   }
 
-  public get reelFormArray() {
+  public get reelFormArray(): AbstractControl[] {
     return (this.form.get('reels') as FormArray).controls;
   }
 

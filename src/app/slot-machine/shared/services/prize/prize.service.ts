@@ -17,7 +17,7 @@ export class PrizeService {
     this.results.result$.subscribe((i) => this.checkPrize(i));
   }
 
-  private checkPrize(result: Result) {
+  private checkPrize(result: Result): void {
     const bars: string[] = [SlotSymbolNames.SingleBar, SlotSymbolNames.TwoBars, SlotSymbolNames.ThreeBars];
     const wins: WinResult = [];
 

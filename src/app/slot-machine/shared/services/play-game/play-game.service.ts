@@ -208,7 +208,7 @@ export class PlayGameService {
     });
   }
 
-  private startPlay = () => {
+  private startPlay = (): void => {
     if (this.isGameInProgress$$.value) {
       return;
     }

@@ -25,7 +25,7 @@ export class PayTableComponent implements OnInit {
     });
   }
 
-  public arr(n: number) {
+  public arr(n: number): number[] {
     return Array(n);
   }
 }

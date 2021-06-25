@@ -29,7 +29,7 @@ export class CashBalanceService {
     this.totalCash$$.next(c);
   }
 
-  public decreaseCash(amount = 1) {
+  public decreaseCash(amount = 1): void {
     this.totalCash$$.next(this.totalCash$$.value - amount);
   }
 }
