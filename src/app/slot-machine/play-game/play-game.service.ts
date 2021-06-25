@@ -33,7 +33,7 @@ export class PlayGameService {
   private isGameInProgress$$ = new BehaviorSubject(false);
   private fixedSettings: FixerSettings | null = null;
   private lines: PIXI.Graphics[] = [];
-  private app!: PIXI.Application;
+  private app: PIXI.Application = new PIXI.Application({ backgroundColor: 0x2f4f4f });
 
   constructor(
     private tweeningService: TweeningService,
@@ -47,7 +47,6 @@ export class PlayGameService {
   }
 
   public initGame(el: HTMLElement): void {
-    this.app = new PIXI.Application({ backgroundColor: 0x2f4f4f });
     el.appendChild(this.app.view);
     Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.entries()).forEach(([name, url]) => {
       this.app.loader.add(name, url);
@@ -97,6 +96,7 @@ export class PlayGameService {
     for (let i = 0; i < MAX_REELS; i++) {
       const rc = new PIXI.Container();
       rc.x = i * REEL_WIDTH;
+      this.drawContainerMarkerLine(i);
       reelContainer.addChild(rc);
 
       const reel: Reel = {
@@ -143,6 +143,26 @@ export class PlayGameService {
     return () => this.updateReelsOnSpin();
   }
 
+  private drawContainerMarkerLine(i: number): void {
+    const lineSize = (this.app.screen.width - REEL_WIDTH * 3) / 4;
+    const step = REEL_WIDTH + lineSize;
+
+    let currentX = 0;
+
+    for (let x = 0; x < 4; x++) {
+      const graphics = new PIXI.Graphics();
+      graphics.lineStyle(1, 0xdaa520, 0.5);
+      graphics.position.set(currentX, SYMBOL_SIZE * (i + 1) - 10);
+      graphics.lineTo(lineSize, 0);
+      graphics.endFill();
+      this.app.stage.addChild(graphics);
+
+      console.log(currentX, currentX + lineSize);
+
+      currentX += step;
+    }
+  }
+
   private drawPrizeLines(): void {
     this.isGameInProgress$$.pipe(filter(Boolean)).subscribe(() => {
       this.lines.forEach((l) => {
@@ -154,10 +174,19 @@ export class PlayGameService {
     this.prizeService.prize$.subscribe((win) => {
       win?.forEach((w) => {
         const graphics = new PIXI.Graphics();
-        graphics.lineStyle(20, 0xdaa520, 0.5);
-        graphics.position.set(0, SYMBOL_SIZE * (w.row + 1) - 10);
-        graphics.lineTo(this.app.screen.width, 0);
+        const rectOffset = 40;
+
+        graphics.lineStyle(2, 0xdaa520, 1);
+        graphics.beginFill(0xdaa520, 0.15);
+        graphics.drawRoundedRect(
+          rectOffset,
+          SYMBOL_SIZE * (w.row + 1) - SYMBOL_SIZE / 2,
+          this.app.screen.width - rectOffset * 2,
+          SYMBOL_SIZE - 20,
+          16
+        );
         graphics.endFill();
+
         this.app.stage.addChild(graphics);
         this.lines.push(graphics);
       });
