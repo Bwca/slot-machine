@@ -218,7 +218,7 @@ export class PlayGameService {
     this.cashBalance.decreaseCash();
 
     this.reels.forEach((r, i) => {
-      const target = r.position + 10 + i * 5;
+      const target = r.position + 100 + i * 5;
       const time = SPIN_TIME + i * SPIN_DELAY_PER_REEL;
 
       this.tweeningService.tweenTo(
