@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 
-import { PlayGameService } from '../play-game/play-game.service';
+import { PlayGameService } from '../../shared/services/play-game/play-game.service';
 
 @Component({
   selector: 'app-slot-machine-canvas',

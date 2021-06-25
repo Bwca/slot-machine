@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
-import { PrizeService } from '../prize/prize.service';
+import { PrizeService } from '../../shared/services/prize/prize.service';
 import {
   REWARDS,
   SlotSymbolNames,
   SLOT_SYMBOL_NAMES_TEXTURES_MAP,
   WinTypes
-} from '../shared/constants';
-import { WinResult } from '../shared/models';
+} from '../../shared/constants';
+import { WinResult } from '../../shared/models';
 
 @Component({
   selector: 'app-pay-table',

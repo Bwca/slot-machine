@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Reel, Tween } from '../shared/models';
+import { Reel, Tween } from '../../models';
 
 @Injectable({
   providedIn: 'root'

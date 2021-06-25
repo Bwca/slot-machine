@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { filter, withLatestFrom } from 'rxjs/operators';
 
-import { CashBalanceService } from '../cash-balance/cash-balance.service';
+import { CashBalanceService } from '../../shared/services/cash-balance/cash-balance.service';
 
 @Component({
   selector: 'app-balance',

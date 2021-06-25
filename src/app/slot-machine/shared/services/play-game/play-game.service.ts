@@ -14,8 +14,8 @@ import {
   SPIN_TIME,
   STYLE,
   SYMBOL_SIZE
-} from '../shared/constants';
-import { FixerSettings, Reel, Result } from '../shared/models';
+} from '../../constants';
+import { FixerSettings, Reel, Result } from '../../models';
 import { TweeningService } from '../tweening/tweening.service';
 import { FixerService } from '../fixer/fixer.service';
 import { PrizeService } from '../prize/prize.service';

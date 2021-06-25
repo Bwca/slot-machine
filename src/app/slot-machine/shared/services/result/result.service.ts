@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { SlotSymbolNames, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '../shared/constants';
-import { Result } from '../shared/models';
+import { SlotSymbolNames, SLOT_SYMBOL_NAMES_TEXTURES_MAP } from '../../constants';
+import { Result } from '../../models';
 
 @Injectable({
   providedIn: 'root'
