@@ -8,6 +8,6 @@ export interface Tween {
   easing: (t: any) => number;
   time: number;
   change: ((i: unknown) => void) | null;
-  complete: ((i: unknown) => void) | null;
+  complete?: ((i: unknown) => void) | null;
   start: number;
 }

@@ -39,12 +39,12 @@ export class PlayGameService {
     private cashBalance: CashBalanceService,
     private fixer: FixerService
   ) {
-    this.cashBalance.totalCash$
+    this.cashBalance.isBroke$
       .pipe(withLatestFrom(this.isLocked$$))
-      .subscribe(([cash, isLocked]) => {
-        if (cash > 0 && isLocked) {
+      .subscribe(([isBroke, isLocked]) => {
+        if (isLocked && !isBroke) {
           this.isLocked$$.next(false);
-        } else if (cash <= 0) {
+        } else if (isBroke) {
           this.isLocked$$.next(true);
         }
       });
@@ -66,7 +66,7 @@ export class PlayGameService {
     );
   }
 
-  public loadAssets(app: PIXI.Application) {
+  public loadAssets(app: PIXI.Application): () => void {
     const reelContainer = new PIXI.Container();
 
     for (let i = 0; i < MAX_REELS; i++) {
@@ -81,24 +81,11 @@ export class PlayGameService {
         previousPosition: 0,
         blur: new PIXI.filters.BlurFilter()
       };
+
       reel.blur.blurX = 0;
       reel.blur.blurY = 0;
       rc.filters = [reel.blur];
-
-      for (let j = 0; j < this.slotTextures.length; j++) {
-        const symbol = new PIXI.Sprite(
-          this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)]
-        );
-
-        symbol.y = j * SYMBOL_SIZE;
-        symbol.scale.x = symbol.scale.y = Math.min(
-          SYMBOL_SIZE / symbol.width,
-          SYMBOL_SIZE / symbol.height
-        );
-        symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
-        reel.symbols.push(symbol);
-        rc.addChild(symbol);
-      }
+      this.getReelSprites(reel, rc);
       this.reels.push(reel);
     }
     app.stage.addChild(reelContainer);
@@ -109,6 +96,7 @@ export class PlayGameService {
     const top = new PIXI.Graphics();
     top.beginFill(0, 1);
     top.drawRect(0, 0, app.screen.width, margin);
+    app.stage.addChild(top);
     this.bottomButton.beginFill(0, 1);
     this.bottomButton.drawRect(0, SYMBOL_SIZE * 3 + margin, app.screen.width, margin);
 
@@ -117,13 +105,27 @@ export class PlayGameService {
     playText.y = app.screen.height - margin + Math.round(margin - playText.height);
     this.bottomButton.addChild(playText);
 
-    app.stage.addChild(top);
     app.stage.addChild(this.bottomButton);
 
     this.bottomButton.interactive = true;
     this.bottomButton.buttonMode = true;
 
     return () => this.updateReelsOnSpin();
+  }
+
+  private getReelSprites(reel: Reel, container: PIXI.Container): void {
+    this.slotTextures.forEach((_, i) => {
+      const symbol = new PIXI.Sprite(this.slotTextures[this.getRandomTextureIndex]);
+
+      symbol.y = i * SYMBOL_SIZE;
+      symbol.scale.x = symbol.scale.y = Math.min(
+        SYMBOL_SIZE / symbol.width,
+        SYMBOL_SIZE / symbol.height
+      );
+      symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
+      reel.symbols.push(symbol);
+      container.addChild(symbol);
+    });
   }
 
   private startPlay = () => {
@@ -138,8 +140,7 @@ export class PlayGameService {
     this.cashBalance.decreaseCash();
 
     this.reels.forEach((r, i) => {
-      const extra = Math.floor(Math.random() * 3);
-      const target = r.position + 10 + i * 5 + extra;
+      const target = r.position + 10 + i * 5;
       const time = SPIN_TIME + i * SPIN_DELAY_PER_REEL;
 
       this.tweeningService.tweenTo(
@@ -149,69 +150,69 @@ export class PlayGameService {
         time,
         backout(0.5),
         null,
-        i === this.reels.length - 1
-          ? () => {
-              const result: Result = [[], [], []];
-              this.isGameInProgress$$.next(false);
-              setTimeout(() => {
-                this.reels.forEach(({ symbols }) => {
-                  symbols.forEach((s) => {
-                    const path = s._texture.textureCacheIds[0];
-                    const index = Math.floor(s.transform.position._y / SYMBOL_SIZE);
-                    if (index >= 0 && index <= 2) {
-                      result[index].push(path);
-                    }
-                  });
-                });
-                console.log(result);
-                this.resultService.newResult = result;
-              });
-            }
-          : null
+        i === this.reels.length - 1 ? () => this.handleCompleteGame() : null
       );
     });
   };
 
-  private updateReelsOnSpin() {
-    this.reels.forEach((reel, reelIndex) => {
-      reel.blur.blurY = (reel.position - reel.previousPosition) * 8;
-      reel.previousPosition = reel.position;
-      reel.symbols.forEach((sprite, spriteIndex) => {
-        const previousY = sprite.y;
-        sprite.y =
-          ((reel.position + spriteIndex) % reel.symbols.length) * SYMBOL_SIZE -
-          SYMBOL_SIZE;
-        /* if (sprite.y < 0 && previousY > SYMBOL_SIZE) {
-          const newSpriteTexture =
-            this.slotTextures[this.getNewTextureIndex(reelIndex, previousY)];
-          sprite.texture = newSpriteTexture;
-          sprite.scale.x = sprite.scale.y = Math.min(
-            SYMBOL_SIZE / sprite.texture.width,
-            SYMBOL_SIZE / sprite.texture.height
-          );
-          sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
-        } */
+  private handleCompleteGame(): void {
+    const result: Result = [[], [], []];
+    this.isGameInProgress$$.next(false);
+    /** Yep, that's a crutch :) */
+    setTimeout(() => {
+      this.reels.forEach(({ symbols }) => {
+        symbols.forEach((s) => {
+          const path = s._texture.textureCacheIds[0];
+          const index = Math.floor(s.transform.position._y / SYMBOL_SIZE);
+          if (index >= 0 && index <= 2) {
+            result[index].push(path);
+          }
+        });
       });
+      this.resultService.newResult = result;
     });
   }
 
-  private getNewTextureIndex(rIndex: number, sIndex: number): number {
-    if (!this.fixedSettings) {
-      return this.getRandomTextureIndex;
-    }
-    const fixedReelSettings = this.fixedSettings.find(
-      ({ reelIndex, row }) => reelIndex === rIndex
+  private updateReelsOnSpin(): void {
+    this.reels.forEach((reel, reelIndex) => {
+      reel.blur.blurY = (reel.position - reel.previousPosition) * 8;
+      reel.previousPosition = reel.position;
+      this.updateSpinningReelSprites(reel, reelIndex);
+    });
+  }
+
+  private updateSpinningReelSprites(reel: Reel, reelIndex: number): void {
+    reel.symbols.forEach((sprite, spriteIndex) => {
+      const previousY = sprite.y;
+      sprite.y =
+        ((reel.position + spriteIndex) % reel.symbols.length) * SYMBOL_SIZE - SYMBOL_SIZE;
+
+      const setting = this.getFixedSpriteSetting(reelIndex, spriteIndex - 1);
+
+      if (setting && setting.spriteIndex !== null) {
+        const newSpriteTexture = this.slotTextures[setting.spriteIndex];
+        sprite.texture = newSpriteTexture;
+        sprite.scale.x = sprite.scale.y = Math.min(
+          SYMBOL_SIZE / sprite.texture.width,
+          SYMBOL_SIZE / sprite.texture.height
+        );
+        sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
+      } else if (sprite.y < 0 && previousY > SYMBOL_SIZE) {
+        const newSpriteTexture = this.slotTextures[this.getRandomTextureIndex];
+        sprite.texture = newSpriteTexture;
+        sprite.scale.x = sprite.scale.y = Math.min(
+          SYMBOL_SIZE / sprite.texture.width,
+          SYMBOL_SIZE / sprite.texture.height
+        );
+        sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
+      }
+    });
+  }
+
+  private getFixedSpriteSetting(reelIndex: number, spriteIndex: number) {
+    return this.fixedSettings?.find(
+      (i) => i.reelIndex === reelIndex && i.row === spriteIndex
     );
-
-    if (
-      !fixedReelSettings ||
-      fixedReelSettings.spriteIndex === null ||
-      fixedReelSettings.row === null
-    ) {
-      return this.getRandomTextureIndex;
-    }
-
-    return fixedReelSettings.spriteIndex;
   }
 
   private get getRandomTextureIndex(): number {

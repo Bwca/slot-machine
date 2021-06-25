@@ -19,7 +19,7 @@ export class SlotMachineCanvasComponent implements OnInit {
     private playGame: PlayGameService,
     private tweeningService: TweeningService
   ) {
-    this.pixiApp = new PIXI.Application({ backgroundColor: 0x1099bb });
+    this.pixiApp = new PIXI.Application({ backgroundColor: 0x2f4f4f });
   }
 
   ngOnInit(): void {

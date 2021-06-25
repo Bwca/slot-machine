@@ -6,15 +6,15 @@ import { WinResult } from '../../models';
   name: 'isWinningCondition'
 })
 export class IsWinningConditionPipe implements PipeTransform {
-  transform(value: WinResult, winType: WinTypes, index?: number): boolean {
+  transform(value: WinResult, winType: WinTypes, index: number | null = null): boolean {
     if (!value) {
       return false;
     }
 
-    if (index === undefined) {
+    if (index === null) {
       return value.some(({ type }) => type === winType);
     } else if (Number.isInteger(index)) {
-      return value[index]?.type === winType;
+      return value.some(({ row, type }) => row === index && type === winType);
     }
     return false;
   }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,10 @@ export class CashBalanceService {
   public totalCash$ = this.totalCash$$.asObservable();
 
   constructor() {}
+
+  public get isBroke$(): Observable<boolean> {
+    return this.totalCash$.pipe(map((v) => v <= 0));
+  }
 
   public set cash(c: number) {
     this.totalCash$$.next(c);

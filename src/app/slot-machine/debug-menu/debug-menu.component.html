@@ -4,6 +4,7 @@
     <input type="radio" [value]="gameMode.Fair" formControlName="mode" /> fair
     <input type="radio" [value]="gameMode.Fixed" formControlName="mode" /> fixed
   </fieldset>
+  
   <ng-container formArrayName="reels" *ngFor="let reel of reelFormArray; let i = index;">
     <fieldset [formGroupName]="i">
         <legend>Reel {{i + 1}}</legend>

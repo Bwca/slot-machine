@@ -3,16 +3,17 @@ import * as PIXI from 'pixi.js';
 export const STYLE = new PIXI.TextStyle({
   fontFamily: 'Arial',
   fontSize: 36,
-  fontStyle: 'italic',
+  fontStyle: 'normal',
   fontWeight: 'bold',
-  fill: ['#ffffff', '#00ff99'],
+  fill: ['#ffffff', '#ff0000'],
   stroke: '#4a1850',
   strokeThickness: 5,
   dropShadow: true,
-  dropShadowColor: '#000000',
-  dropShadowBlur: 4,
+  dropShadowColor: '#ffff00',
+  dropShadowBlur: 10,
   dropShadowAngle: Math.PI / 6,
-  dropShadowDistance: 6,
+  dropShadowDistance: 0,
   wordWrap: true,
-  wordWrapWidth: 440
+  wordWrapWidth: 440,
+  fontVariant: 'small-caps'
 });

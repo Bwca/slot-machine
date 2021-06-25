@@ -16,7 +16,7 @@ export class TweeningService {
     time: number,
     easing: (t: any) => number,
     onchange: null,
-    oncomplete: (() => void) | null
+    oncomplete?: (() => void) | null
   ) {
     const tween: Tween = {
       object,
