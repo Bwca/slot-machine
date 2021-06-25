@@ -2,9 +2,9 @@
   <fieldset>
     <legend>game mode</legend>
     <input type="radio" [value]="gameMode.Fair" formControlName="mode" />
-    fair
+    regular
     <input type="radio" [value]="gameMode.Fixed" formControlName="mode" />
-    fixed
+    debug
   </fieldset>
 
   <ng-container formArrayName="reels" *ngFor="let reel of reelFormArray; let i = index">

@@ -78,11 +78,11 @@ export class PlayGameService {
     const reelContainer = new PIXI.Container();
 
     this.drawPrizeLines();
-
+    this.drawBackgroundLines();
     for (let i = 0; i < MAX_REELS; i++) {
+      this.renderReelBackground(i);
       const rc = new PIXI.Container();
       rc.x = i * REEL_WIDTH;
-      this.drawContainerMarkerLine(i);
       reelContainer.addChild(rc);
 
       const reel: Reel = {
@@ -106,39 +106,63 @@ export class PlayGameService {
     reelContainer.x = Math.round(this.app.screen.width - REEL_WIDTH * 3);
     const top = new PIXI.Graphics();
     top.beginFill(0, 1);
-    top.drawRect(0, 0, this.app.screen.width, margin);
+    top.drawRect(0, 0, this.app.screen.width, margin - 10);
     this.app.stage.addChild(top);
     this.bottomButton.beginFill(0, 1);
     this.bottomButton.drawRect(0, SYMBOL_SIZE * 3 + margin, this.app.screen.width, margin);
 
-    const playText = new PIXI.Text('SPIN 2 WIN!', STYLE);
+    const playText = new PIXI.Text('> SPIN 2 WIN! <', STYLE);
     playText.x = Math.round((this.bottomButton.width - playText.width) / 2);
     playText.y = this.app.screen.height - margin + Math.round(margin - playText.height);
     this.bottomButton.addChild(playText);
-
     this.app.stage.addChild(this.bottomButton);
-
     this.bottomButton.interactive = true;
     this.bottomButton.buttonMode = true;
 
     return () => this.updateReelsOnSpin();
   }
 
-  private drawContainerMarkerLine(i: number): void {
-    const lineSize = (this.app.screen.width - REEL_WIDTH * 3) / 4;
-    const step = REEL_WIDTH + lineSize;
+  private renderReelBackground(reelIndex: number): void {
+    const offset = 30;
+    const gradTexture = this.createReelGradientTexture();
+    const sprite = new PIXI.Sprite(gradTexture);
+    sprite.position.set(reelIndex * REEL_WIDTH + offset + 20, 0);
+    sprite.width = REEL_WIDTH - offset;
+    sprite.height = this.app.screen.height;
+    this.app.stage.addChild(sprite);
+  }
 
-    let currentX = 0;
+  private createReelGradientTexture(): PIXI.Texture<PIXI.Resource> {
+    const size = REEL_WIDTH - 70;
+    const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = size;
 
+    const ctx: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const grd = ctx.createLinearGradient(0, 0, 0, size);
+    grd.addColorStop(0.1, '#000000');
+    grd.addColorStop(0.2, '#555555');
+    grd.addColorStop(0.3, '#888888');
+    grd.addColorStop(0.4, '#aaaaaa');
+    grd.addColorStop(0.5, '#ffffff');
+    grd.addColorStop(0.6, '#aaaaaa');
+    grd.addColorStop(0.7, '#888888');
+    grd.addColorStop(0.8, '#555555');
+    grd.addColorStop(0.9, '#000000');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 1, size);
+
+    return PIXI.Texture.from(canvas);
+  }
+
+  private drawBackgroundLines(): void {
     for (let x = 0; x < 4; x++) {
       const graphics = new PIXI.Graphics();
       graphics.lineStyle(1, 0xdaa520, 0.5);
-      graphics.position.set(currentX, SYMBOL_SIZE * (i + 1) - 10);
-      graphics.lineTo(lineSize, 0);
+      graphics.position.set(0, SYMBOL_SIZE * (x + 1) - 10);
+      graphics.lineTo(this.app.screen.width, 0);
       graphics.endFill();
       this.app.stage.addChild(graphics);
-
-      currentX += step;
     }
   }
 
@@ -153,10 +177,10 @@ export class PlayGameService {
     this.prizeService.prize$.subscribe((win) => {
       win?.forEach((w) => {
         const graphics = new PIXI.Graphics();
-        const rectOffset = 40;
+        const rectOffset = 10;
 
-        graphics.lineStyle(2, 0xdaa520, 1);
-        graphics.beginFill(0xdaa520, 0.15);
+        graphics.lineStyle(2, 0xffff00, 1);
+        graphics.beginFill(0xffff00, 0.15);
         graphics.drawRoundedRect(
           rectOffset,
           SYMBOL_SIZE * (w.row + 1) - SYMBOL_SIZE / 2,

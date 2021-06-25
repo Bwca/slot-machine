@@ -4,6 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "mini-signals": ["node_modules/mini-signals/index.js"],
       "@slotMachine/*": ["src/app/slot-machine/*"]
     },
     "outDir": "./dist/out-tsc",
