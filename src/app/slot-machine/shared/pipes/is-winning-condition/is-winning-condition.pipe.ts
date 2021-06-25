@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+
 import { WinTypes } from '../../constants';
 import { WinResult } from '../../models';
 

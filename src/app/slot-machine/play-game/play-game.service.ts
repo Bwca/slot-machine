@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { withLatestFrom } from 'rxjs/operators';
+import { filter, withLatestFrom } from 'rxjs/operators';
 
 import * as PIXI from 'pixi.js';
 
@@ -19,6 +18,7 @@ import {
 import { FixerSettings, Reel, Result } from '../shared/models';
 import { TweeningService } from '../tweening/tweening.service';
 import { FixerService } from '../fixer/fixer.service';
+import { PrizeService } from '../prize/prize.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,13 +32,44 @@ export class PlayGameService {
   private isLocked$$ = new BehaviorSubject<boolean>(false);
   private isGameInProgress$$ = new BehaviorSubject(false);
   private fixedSettings: FixerSettings | null = null;
+  private lines: PIXI.Graphics[] = [];
+  private app!: PIXI.Application;
 
   constructor(
     private tweeningService: TweeningService,
     private resultService: ResultService,
+    private prizeService: PrizeService,
     private cashBalance: CashBalanceService,
     private fixer: FixerService
   ) {
+    this.lockGameBasedOnPlayerCashBalance();
+    this.subscribeToFixedChangesUpdates();
+  }
+
+  public initGame(el: HTMLElement): void {
+    this.app = new PIXI.Application({ backgroundColor: 0x2f4f4f });
+    el.appendChild(this.app.view);
+    Array.from(SLOT_SYMBOL_NAMES_TEXTURES_MAP.entries()).forEach(([name, url]) => {
+      this.app.loader.add(name, url);
+    });
+
+    this.app.loader.load(() => {
+      this.app.ticker.add(this.loadAssets());
+      this.app.ticker.add(() => this.tweeningService.updateTweening());
+    });
+  }
+
+  private subscribeToFixedChangesUpdates(): void {
+    combineLatest([this.isGameInProgress$$, this.fixer.fixerSettings$]).subscribe(
+      ([isInProgress, settings]) => {
+        if (!isInProgress) {
+          this.fixedSettings = settings;
+        }
+      }
+    );
+  }
+
+  private lockGameBasedOnPlayerCashBalance(): void {
     this.cashBalance.isBroke$
       .pipe(withLatestFrom(this.isLocked$$))
       .subscribe(([isBroke, isLocked]) => {
@@ -56,18 +87,12 @@ export class PlayGameService {
         (this.bottomButton as any).removeListener('pointerdown', this.startPlay);
       }
     });
-
-    combineLatest([this.isGameInProgress$$, this.fixer.fixerSettings$]).subscribe(
-      ([isInProgress, settings]) => {
-        if (!isInProgress) {
-          this.fixedSettings = settings;
-        }
-      }
-    );
   }
 
-  public loadAssets(app: PIXI.Application): () => void {
+  private loadAssets(): () => void {
     const reelContainer = new PIXI.Container();
+
+    this.drawPrizeLines();
 
     for (let i = 0; i < MAX_REELS; i++) {
       const rc = new PIXI.Container();
@@ -88,29 +113,55 @@ export class PlayGameService {
       this.getReelSprites(reel, rc);
       this.reels.push(reel);
     }
-    app.stage.addChild(reelContainer);
+    this.app.stage.addChild(reelContainer);
 
-    const margin = (app.screen.height - SYMBOL_SIZE * 3) / 2;
+    const margin = (this.app.screen.height - SYMBOL_SIZE * 3) / 2;
     reelContainer.y = margin;
-    reelContainer.x = Math.round(app.screen.width - REEL_WIDTH * 3);
+    reelContainer.x = Math.round(this.app.screen.width - REEL_WIDTH * 3);
     const top = new PIXI.Graphics();
     top.beginFill(0, 1);
-    top.drawRect(0, 0, app.screen.width, margin);
-    app.stage.addChild(top);
+    top.drawRect(0, 0, this.app.screen.width, margin);
+    this.app.stage.addChild(top);
     this.bottomButton.beginFill(0, 1);
-    this.bottomButton.drawRect(0, SYMBOL_SIZE * 3 + margin, app.screen.width, margin);
+    this.bottomButton.drawRect(
+      0,
+      SYMBOL_SIZE * 3 + margin,
+      this.app.screen.width,
+      margin
+    );
 
     const playText = new PIXI.Text('SPIN 2 WIN!', STYLE);
     playText.x = Math.round((this.bottomButton.width - playText.width) / 2);
-    playText.y = app.screen.height - margin + Math.round(margin - playText.height);
+    playText.y = this.app.screen.height - margin + Math.round(margin - playText.height);
     this.bottomButton.addChild(playText);
 
-    app.stage.addChild(this.bottomButton);
+    this.app.stage.addChild(this.bottomButton);
 
     this.bottomButton.interactive = true;
     this.bottomButton.buttonMode = true;
 
     return () => this.updateReelsOnSpin();
+  }
+
+  private drawPrizeLines(): void {
+    this.isGameInProgress$$.pipe(filter(Boolean)).subscribe(() => {
+      this.lines.forEach((l) => {
+        this.app.stage.removeChild(l);
+      });
+      this.lines = [];
+    });
+
+    this.prizeService.prize$.subscribe((win) => {
+      win?.forEach((w) => {
+        const graphics = new PIXI.Graphics();
+        graphics.lineStyle(20, 0xdaa520, 0.5);
+        graphics.position.set(0, SYMBOL_SIZE * (w.row + 1) - 10);
+        graphics.lineTo(this.app.screen.width, 0);
+        graphics.endFill();
+        this.app.stage.addChild(graphics);
+        this.lines.push(graphics);
+      });
+    });
   }
 
   private getReelSprites(reel: Reel, container: PIXI.Container): void {
@@ -190,23 +241,27 @@ export class PlayGameService {
       const setting = this.getFixedSpriteSetting(reelIndex, spriteIndex - 1);
 
       if (setting && setting.spriteIndex !== null) {
-        const newSpriteTexture = this.slotTextures[setting.spriteIndex];
-        sprite.texture = newSpriteTexture;
-        sprite.scale.x = sprite.scale.y = Math.min(
-          SYMBOL_SIZE / sprite.texture.width,
-          SYMBOL_SIZE / sprite.texture.height
-        );
-        sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
-      } else if (sprite.y < 0 && previousY > SYMBOL_SIZE) {
-        const newSpriteTexture = this.slotTextures[this.getRandomTextureIndex];
-        sprite.texture = newSpriteTexture;
-        sprite.scale.x = sprite.scale.y = Math.min(
-          SYMBOL_SIZE / sprite.texture.width,
-          SYMBOL_SIZE / sprite.texture.height
-        );
-        sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
+        this.setReelSpriteTexture(sprite, setting.spriteIndex);
+        return;
+      }
+
+      if (sprite.y < 0 && previousY > SYMBOL_SIZE) {
+        this.setReelSpriteTexture(sprite);
       }
     });
+  }
+
+  private setReelSpriteTexture(
+    sprite: PIXI.Sprite,
+    textureIndex: number = this.getRandomTextureIndex
+  ) {
+    const newSpriteTexture = this.slotTextures[textureIndex];
+    sprite.texture = newSpriteTexture;
+    sprite.scale.x = sprite.scale.y = Math.min(
+      SYMBOL_SIZE / sprite.texture.width,
+      SYMBOL_SIZE / sprite.texture.height
+    );
+    sprite.x = Math.round((SYMBOL_SIZE - sprite.width) / 2);
   }
 
   private getFixedSpriteSetting(reelIndex: number, spriteIndex: number) {

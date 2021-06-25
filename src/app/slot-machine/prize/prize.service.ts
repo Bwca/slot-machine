@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ResultService } from '../result/result.service';
 
+import { ResultService } from '../result/result.service';
 import { REWARDS, SlotSymbolNames, WinTypes } from '../shared/constants';
 import { Result, WinResult, WinsMap } from '../shared/models';
 
