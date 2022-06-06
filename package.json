@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "deploy":"ng deploy --base-href=/slot-machine/",
+    "deploy": "ng deploy --base-href=/test__slot-machine/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
